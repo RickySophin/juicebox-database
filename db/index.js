@@ -130,7 +130,7 @@ async function updatePost(postId, fields = {}) {
 
         return await getPostById(postId);
     } catch (error) {
-        throw error
+        throw error;
     }
 }
 
@@ -139,11 +139,11 @@ async function getAllPosts() {
         const { rows: postIds } = await client.query(`
             SELECT id
             FROM posts;
-        `)
+        `);
         
         const posts = await Promise.all(postIds.map(
             post => getPostById( post.id )
-        ))
+        ));
 
         return posts;
     } catch (error) {
@@ -161,7 +161,7 @@ async function getPostsByUser(userId) {
 
         const posts = await Promise.all(postIds.map(
             post => getPostById( post.id )
-        ))
+        ));
 
         return posts;
     } catch (error) {
@@ -183,15 +183,14 @@ async function createTags(tagList) {
     try {
         await client.query(`
             INSERT INTO tags(name) 
-            VALUES (${insertValues})
+            VALUES (${ insertValues })
             ON CONFLICT (name) DO NOTHING;
             `, tagList);
 
         const { rows } = await client.query(`
-            SELECT *
-            FROM tags
+            SELECT * FROM tags
             WHERE name
-            IN (${selectValues});
+            IN (${ selectValues });
         `, tagList);
 
         return rows;
@@ -212,7 +211,6 @@ async function createPostTag(postId, tagId) {
         throw error;
     }
 }
-
 
 async function getPostById(postId) {
     try {
@@ -278,6 +276,19 @@ async function getPostsByTagName(tagName) {
     }
 } 
 
+async function getAllTags() {
+    try {
+        const { rows } = await client.query(`
+            SELECT *
+            FROM tags;
+        `);
+
+        return { rows }
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     client,
     getAllUsers,
@@ -290,7 +301,8 @@ module.exports = {
     getPostsByUser,
     createTags,
     createPostTag,
-    getPostById,
     addTagsToPost,
-    getPostsByTagName
+    getPostsByTagName,
+    getAllTags,
+    getPostById
 }
