@@ -21,7 +21,9 @@
   },
   "homepage": "https://github.com/RickySophin/juicebox-database#readme",
   "dependencies": {
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "pg": "^8.7.3"
   },
